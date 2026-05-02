@@ -216,3 +216,13 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Certs
+*.crt
+*.key
+*.srl
+*.ext
+*.csr
+
+# IDE
+.idea/
