@@ -1,15 +1,14 @@
 #!/bin/bash
 
 CERT_DIR="certs"
-GENERATE_CA=false
 mkdir -p $CERT_DIR
 
-if [ "$GENERATE_CA" = true ]; then
+# Generate CA if it doesn't exist
+if [ ! -f "$CERT_DIR/ca.key" ]; then
   echo "Generating CA..."
   openssl genrsa -out $CERT_DIR/ca.key 2048
   openssl req -x509 -new -nodes -key $CERT_DIR/ca.key -sha256 -days 365 -out $CERT_DIR/ca.crt -subj "/CN=MyDemoCA"
 fi
-
 
 generate_cert() {
     local name=$1
@@ -28,7 +27,11 @@ subjectAltName = @alt_names
 DNS.1 = $dns_name
 EOT
 
-    openssl x509 -req -in $CERT_DIR/$name.csr -CA $CERT_DIR/ca.crt -CAkey $CERT_DIR/ca.key -CAcreateserial         -out $CERT_DIR/$name.crt -days 365 -sha256 -extfile $CERT_DIR/$name.ext
+    openssl x509 -req -in $CERT_DIR/$name.csr -CA $CERT_DIR/ca.crt -CAkey $CERT_DIR/ca.key -CAcreateserial \
+        -out $CERT_DIR/$name.crt -days 365 -sha256 -extfile $CERT_DIR/$name.ext
+    
+    # Create combined PEM for HAProxy
+    cat $CERT_DIR/$name.crt $CERT_DIR/$name.key > $CERT_DIR/$name.pem
 }
 
 generate_cert "loadbalancer" "loadbalancer.tevs"

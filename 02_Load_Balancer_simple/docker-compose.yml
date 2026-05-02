@@ -1,0 +1,31 @@
+services:
+  haproxy:
+    build: ./haproxy
+    ports:
+      - "${SERVER1_PORT}:443"
+    volumes:
+      - ./certs:/usr/local/etc/haproxy/certs:ro
+    depends_on:
+      - webserver1
+      - webserver2
+    restart: unless-stopped
+
+  webserver1:
+    build: ./webserver1
+    environment:
+      - SERVER2_PORT=8001
+      - CERT_DIR=/app/certs
+    volumes:
+      - ./certs:/app/certs:ro
+    ports:
+      - "8001:8001"
+
+  webserver2:
+    build: ./webserver2
+    environment:
+      - SERVER3_PORT=8002
+      - CERT_DIR=/app/certs
+    volumes:
+      - ./certs:/app/certs:ro
+    ports:
+      - "8002:8002"
