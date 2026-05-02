@@ -13,6 +13,7 @@ def load_env():
                     key, value = line.strip().split('=', 1)
                     env[key] = value
     except FileNotFoundError:
+        print('.env not found')
         pass
     return env
 
