@@ -47,6 +47,13 @@ curl -k https://loadbalancer.tevs:8000
 
 Repeatedly running the command will show responses from webserver1 and webserver2 as HAProxy proxies the requests in a round-robin fashion.
 
+### Monitoring
+
+HAProxy provides a built-in statistics dashboard where you can see the state of the backends and traffic metrics:
+
+- **URL**: [http://localhost:8404/stats](http://localhost:8404/stats)
+- **Credentials**: `admin` / `admin`
+
 ## Cleanup
 
 To stop the servers and the container, press Ctrl+C in the terminal.

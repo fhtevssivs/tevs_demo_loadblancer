@@ -13,6 +13,7 @@ echo ""
 echo "=================================================="
 echo "FULL STACK IS ACTIVE (Dockerized)"
 echo "Click here to access: https://loadbalancer.tevs:8000"
+echo "HAProxy Stats Dashboard: http://localhost:8404/stats (admin/admin)"
 echo "=================================================="
 echo ""
 
