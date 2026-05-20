@@ -1,0 +1,90 @@
+services:
+  haproxy1:
+    build: ./haproxy
+    ports:
+      - "8404:8404"
+    volumes:
+      - ./certs:/usr/local/etc/haproxy/certs:ro
+    depends_on:
+      - webserver1
+      - webserver2
+    networks:
+      app-network:
+        ipv4_address: 10.21.0.10
+    restart: unless-stopped
+
+  haproxy2:
+    build: ./haproxy
+    volumes:
+      - ./certs:/usr/local/etc/haproxy/certs:ro
+    depends_on:
+      - webserver1
+      - webserver2
+    networks:
+      app-network:
+        ipv4_address: 10.21.0.11
+    restart: unless-stopped
+
+  gateway:
+    image: haproxy:alpine
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./gateway/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on:
+      - haproxy1
+      - haproxy2
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  keepalived1:
+    build: ./keepalived
+    network_mode: "service:haproxy1"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - ./keepalived/keepalived.conf.master:/etc/keepalived/keepalived.conf:ro
+    depends_on:
+      - haproxy1
+
+  keepalived2:
+    build: ./keepalived
+    network_mode: "service:haproxy2"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - ./keepalived/keepalived.conf.backup:/etc/keepalived/keepalived.conf:ro
+    depends_on:
+      - haproxy2
+
+  webserver1:
+    build: ./webserver1
+    environment:
+      - SERVER2_PORT=8001
+      - CERT_DIR=/app/certs
+    volumes:
+      - ./certs:/app/certs:ro
+    networks:
+      app-network:
+        ipv4_address: 10.21.0.21
+
+  webserver2:
+    build: ./webserver2
+    environment:
+      - SERVER3_PORT=8002
+      - CERT_DIR=/app/certs
+    volumes:
+      - ./certs:/app/certs:ro
+    networks:
+      app-network:
+        ipv4_address: 10.21.0.22
+
+networks:
+  app-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.21.0.0/24
