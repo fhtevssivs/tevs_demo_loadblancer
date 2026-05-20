@@ -1,5 +1,7 @@
 # TEVS Demo HA High Availability Load Balancer
 
+Part of the [TEVS Load Balancer Demos](../README.md) series.
+
 A demonstration of a High Availability (HA) load balancer setup using **HAProxy** and **Keepalived** running in Docker containers.
 
 ## Project Overview

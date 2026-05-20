@@ -1,5 +1,7 @@
 # TEVS Demo Simple Redirect Load Balancer
 
+Part of the [TEVS Load Balancer Demos](../README.md) series.
+
 A demonstration of a simple round-robin load balancer (redirector) and two backend web servers implemented in Python, featuring HTTPS and local DNS management.
 
 ## Project Overview

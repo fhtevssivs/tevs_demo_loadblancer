@@ -1,5 +1,7 @@
 # TEVS Demo HAProxy Load Balancer
 
+Part of the [TEVS Load Balancer Demos](../README.md) series.
+
 A demonstration of a round-robin load balancer using **HAProxy** running in a Docker container, balancing requests between two Python backend web servers.
 
 ## Project Overview
